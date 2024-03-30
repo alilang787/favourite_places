@@ -1,16 +1,26 @@
+// import 'package:favourite_places/main_fav_places.dart';
+
 import 'package:favourite_places/main_fav_places.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
+import 'package:favourite_places/screens/map-screen/screen_map_main.dart';
 //  Hello main
 
 void main() {
-  
-
+  const mapBoxKey = String.fromEnvironment('MAPBOX_ACCESS_TOKEN');
+  WidgetsFlutterBinding.ensureInitialized();
+  MapboxOptions.setAccessToken(mapBoxKey);
   // GoogleFonts.config.allowRuntimeFetching = false;
-  runApp(ProviderScope(child: const MyApp()));
+  runApp(ProviderScope(
+  
+    
+    child: const MyApp(),
+  ));
 }
 
 const MaterialColor kColorPrimery = Colors.deepPurple;
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -27,7 +37,7 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: const FavouritePlacesMain(),
+      home:FavouritePlacesMain(),
     );
   }
 }

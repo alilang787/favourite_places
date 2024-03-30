@@ -59,7 +59,7 @@ class _FavouritePlacesMainState extends ConsumerState<FavouritePlacesMain> {
                   leading: CircleAvatar(
                     radius: 36,
                     backgroundImage: FileImage(
-                      place.place_image,
+                      place.loc_data.loc_image,
                     ),
                   ),
                   title: Text(place.name),

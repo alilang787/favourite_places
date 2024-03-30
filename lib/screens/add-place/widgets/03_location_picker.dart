@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:favourite_places/models/model_fav_places.dart';
+import 'package:favourite_places/screens/map-screen/screen_map_main.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart' as appDir;
 import 'package:favourite_places/main.dart';
@@ -29,6 +31,7 @@ class _LocationPickerState extends State<LocationPicker> {
   bool _isLoading = false;
   File? _mapImage;
   String? _adress;
+  List<int>? tempImg;
   @override
   void initState() {
     super.initState();
@@ -53,7 +56,7 @@ class _LocationPickerState extends State<LocationPicker> {
               color: kColorPrimery.shade100,
             ),
           ),
-          child: _mapImage == null
+          child: tempImg == null
               ? null
               : ClipRRect(
                   borderRadius: BorderRadius.circular(16),
@@ -61,6 +64,7 @@ class _LocationPickerState extends State<LocationPicker> {
                     children: [
                       Image.file(
                         _mapImage!,
+                        // Uint8List.fromList(tempImg!),
                         fit: BoxFit.cover,
                       ),
                       Positioned(
@@ -108,7 +112,16 @@ class _LocationPickerState extends State<LocationPicker> {
                     ),
                   ),
             ElevatedButton.icon(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) {
+                    return MapScreen(
+                      mapView: MapView.Interacting,
+                      locationSaver: _getLoactionArtifacts,
+                    );
+                  },
+                ));
+              },
               icon: Icon(Icons.map),
               label: Text(
                 'Pick on Map',
@@ -165,7 +178,7 @@ class _LocationPickerState extends State<LocationPicker> {
 
   //   .... getLoactionArtifacts (image & adress)  ....
 
-  _getLoactionArtifacts({
+  Future<bool> _getLoactionArtifacts({
     required BuildContext ctx,
     required double lng,
     required double lat,
@@ -187,12 +200,12 @@ class _LocationPickerState extends State<LocationPicker> {
           );
         },
       );
+    return worked;
   }
 
   Future<bool> _loadLocationArtifacts(
       {required double lng, required double lat}) async {
     const mapBoxKey = String.fromEnvironment('MAPBOX_ACCESS_TOKEN');
-    logger.i(mapBoxKey);
     if (mapBoxKey.isEmpty) return false;
 
     final _addressCompos = Uri.parse(
@@ -215,14 +228,16 @@ class _LocationPickerState extends State<LocationPicker> {
         resp_statimg.body.isEmpty) return false;
 
     final imgBytes = resp_statimg.body.codeUnits;
-    final _appdir = await appDir.getApplicationCacheDirectory();
-    final _filePath = path.join(_appdir.path, '${uuid.v4}.jpg');
-
+    final _appdir = await appDir.getTemporaryDirectory();
+    final _filePath = path.join(_appdir.path, '${uuid.v4()}.jpg');
     File _imgFile = File(_filePath);
+
+    logger.i(_imgFile.path);
     _imgFile = await _imgFile.writeAsBytes(imgBytes);
     setState(() {
       _adress = json.decode(resp_adress.body)['features'][0]['properties']
           ['full_address'];
+      tempImg = imgBytes;
       _mapImage = _imgFile;
     });
 
