@@ -1,14 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
-class BottomBar extends StatelessWidget {
+class BottomBar extends StatefulWidget {
+  final int index;
   const BottomBar({
     super.key,
-    required bool isBothShowen,
-  }) : _isBothShowen = isBothShowen;
+    required this.index,
+  });
 
-  final bool _isBothShowen;
+  @override
+  State<BottomBar> createState() => _BottomBarState();
+}
 
+class _BottomBarState extends State<BottomBar> {
+  final List<String> bottomText = [
+    'Place Name',
+    'Place Image',
+    'Place Location'
+  ];
   @override
   Widget build(BuildContext context) {
     return BottomAppBar(
@@ -25,20 +34,35 @@ class BottomBar extends StatelessWidget {
                 horizontal: 12,
                 vertical: 4,
               ),
-              child: Shimmer.fromColors(
-                child: FittedBox(child: Text('This is dummy text')),
-                baseColor: Colors.white,
-                highlightColor: Theme.of(context).primaryColor,
+              child: FittedBox(
+                fit: BoxFit.cover,
+                child: Shimmer.fromColors(
+                  child: Row(
+                    children: [
+                      Text('Pick your '),
+                      AnimatedSwitcher(
+                        duration: Duration(milliseconds: 300),
+                        transitionBuilder: (child, animation) {
+                          return SlideTransition(
+                            position:
+                                Tween(begin: Offset(0, 1), end: Offset(0, 0))
+                                    .animate(animation),
+                            child: child,
+                          );
+                        },
+                        child: Text(
+                          key: ValueKey(widget.index - 1),
+                          bottomText[widget.index - 1],
+                        ),
+                      ),
+                    ],
+                  ),
+                  baseColor: Colors.white,
+                  highlightColor: Theme.of(context).primaryColor,
+                ),
               ),
             ),
           ),
-          if (!_isBothShowen)
-            Opacity(
-              opacity: 0,
-              child: CircleAvatar(
-                radius: 34,
-              ),
-            )
         ],
       ),
     );

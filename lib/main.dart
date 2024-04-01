@@ -4,7 +4,7 @@ import 'package:favourite_places/main_fav_places.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
-import 'package:favourite_places/screens/map-screen/screen_map_main.dart';
+
 //  Hello main
 
 void main() {

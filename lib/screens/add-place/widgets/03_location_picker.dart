@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:favourite_places/models/model_fav_places.dart';
 import 'package:favourite_places/screens/map-screen/screen_map_main.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart' as appDir;
 import 'package:favourite_places/main.dart';
@@ -99,39 +100,59 @@ class _LocationPickerState extends State<LocationPicker> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            _isLoading
-                ? CircularProgressIndicator()
-                : ElevatedButton.icon(
-                    onPressed: _getCurrentLocation,
-                    icon: Icon(Icons.location_on),
-                    label: Text(
-                      'Pick Automatic',
-                      style: TextStyle(
-                        fontSize: 16,
+            Container(
+              width: 130,
+              height: 30,
+              alignment: Alignment.center,
+              child: FittedBox(
+                child: _isLoading
+                    ? Container(
+                        width: 12,
+                        height: 12,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 4,
+                        ),
+                      )
+                    : ElevatedButton.icon(
+                        onPressed: _getCurrentLocation,
+                        icon: Icon(Icons.location_on),
+                        label: Text(
+                          'Pick Automatic',
+                          style: TextStyle(
+                            fontSize: 16,
+                          ),
+                        ),
                       ),
+              ),
+            ),
+            Container(
+              width: 130,
+              height: 30,
+              alignment: Alignment.center,
+              child: FittedBox(
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) {
+                        return MapScreen(
+                          mapView: MapView.Interacting,
+                          locationSaver: _getLoactionArtifacts,
+                        );
+                      },
+                    ));
+                  },
+                  icon: Icon(Icons.map),
+                  label: Text(
+                    'Pick on Map',
+                    style: TextStyle(
+                      fontSize: 16,
                     ),
                   ),
-            ElevatedButton.icon(
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) {
-                    return MapScreen(
-                      mapView: MapView.Interacting,
-                      locationSaver: _getLoactionArtifacts,
-                    );
-                  },
-                ));
-              },
-              icon: Icon(Icons.map),
-              label: Text(
-                'Pick on Map',
-                style: TextStyle(
-                  fontSize: 16,
                 ),
               ),
             ),
           ],
-        )
+        ),
       ],
     ));
   }

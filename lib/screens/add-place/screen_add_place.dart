@@ -28,7 +28,7 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
   File? picked_image;
   LocData? loc_data;
 
-  bool _isBothShowen = false;
+  // bool _isBothShowen = false;
   int pagePosition = 1;
 
   late PageController _pageController;
@@ -48,14 +48,14 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (pagePosition == 2)
-      setState(() {
-        _isBothShowen = true;
-      });
-    else
-      setState(() {
-        _isBothShowen = false;
-      });
+    // if (pagePosition == 2)
+    //   setState(() {
+    //     _isBothShowen = true;
+    //   });
+    // else
+    //   setState(() {
+    //     _isBothShowen = false;
+    //   });
     return Scaffold(
       backgroundColor: kColorPrimery.shade50,
       appBar: AppBar(
@@ -91,11 +91,11 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
               width: double.infinity,
               child: Center(
                 child: ElevatedButton(
-                  onPressed: () {
-                    ref.read(fav_provider.notifier).addplace(
+                  onPressed: () async {
+                    await ref.read(fav_provider.notifier).addplace(
                           name: place_name!,
-                          image: picked_image!,
-                          loc: loc_data!,
+                          image_raw: picked_image!,
+                          loc_raw: loc_data!,
                         );
                     Navigator.pop(context);
                   },
@@ -172,7 +172,7 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
               ),
             ),
       bottomNavigationBar: BottomBar(
-        isBothShowen: _isBothShowen,
+        index: pagePosition,
       ),
     );
   }
